@@ -3,17 +3,21 @@
             [io.pedestal.http.route :as route]
             [io.pedestal.http.body-params :as body-params]
             [io.pedestal.http.route.definition :refer [defroutes]]
-            [ring.util.response :as ring-resp]))
+            [ring.util.response :as ring-resp]
+            [alice.book :as book]
+            [clojure.string :as string]))
+
+(defn home-page
+  [request]
+  (ring-resp/response (format "<h1>%s</h1></br></br><div>%s</div>"
+                              book/title
+                              (string/replace (first book/pages) #"\n" "</br>"))))
 
 (defn about-page
   [request]
   (ring-resp/response (format "Clojure %s - served from %s"
                               (clojure-version)
                               (route/url-for ::about-page))))
-
-(defn home-page
-  [request]
-  (ring-resp/response "Hello World!"))
 
 (defroutes routes
   ;; Defines "/" and "/about" routes with their associated :get handlers.
@@ -48,4 +52,3 @@
               ::bootstrap/type :jetty
               ;;::bootstrap/host "localhost"
               ::bootstrap/port 8080})
-
