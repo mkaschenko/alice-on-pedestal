@@ -1,7 +1,8 @@
 (ns alice.server
   (:gen-class) ; for -main method in uberjar
   (:require [io.pedestal.http :as server]
-            [alice.service :as service]))
+            [alice.service :as service]
+            [io.pedestal.service-tools.dev :as dev]))
 
 ;; This is an adapted service map, that can be started and stopped
 ;; From the REPL you can call server/start and server/stop on this service
@@ -50,4 +51,3 @@
 ;;  [_]
 ;;  (server/servlet-destroy @servlet)
 ;;  (reset! servlet nil))
-
