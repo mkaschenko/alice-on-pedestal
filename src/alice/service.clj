@@ -11,7 +11,7 @@
   [request]
   (ring-resp/response (format "<h1>%s</h1></br></br><div>%s</div>"
                               book/title
-                              (string/replace (first book/pages) #"\n" "</br>"))))
+                              (string/join "</br>" (first book/pages)))))
 
 (defn about-page
   [request]

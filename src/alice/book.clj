@@ -2,6 +2,7 @@
   (:require [clojure.string :as string]))
 
 (defn paginate
+  "Split lines into pages"
   ([lines lines-per-page]
    (paginate lines lines-per-page []))
   ([lines lines-per-page pages]
@@ -9,7 +10,7 @@
      pages
      (paginate (drop lines-per-page lines)
                lines-per-page
-               (conj pages (string/join "\n" (take lines-per-page lines)))))))
+               (conj pages (take lines-per-page lines))))))
 
 (def title "Alice's Adventures in Wonderland")
 

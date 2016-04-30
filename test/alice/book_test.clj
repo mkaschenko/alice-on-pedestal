@@ -14,3 +14,6 @@
   (is (.startsWith (first book/pages) "CHAPTER I. Down the Rabbit-Hole"))
   (is (.endsWith (last book/pages) "THE END"))
   (is (= (count book/pages) 111)))
+       (book/paginate ["Alice" "Caterpillar" "Cheshire Cat"
+                       "Jabberwock" "White Rabbit"] 2)
+       [["Alice" "Caterpillar"] ["Cheshire Cat" "Jabberwock"] ["White Rabbit"]])))
