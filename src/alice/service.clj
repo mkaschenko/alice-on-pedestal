@@ -1,6 +1,5 @@
 (ns alice.service
   (:require [io.pedestal.http :as bootstrap]
-            [io.pedestal.http.route :as route]
             [io.pedestal.http.body-params :as body-params]
             [io.pedestal.http.route.definition :refer [defroutes]]
             [ring.util.response :as ring-resp]
@@ -20,9 +19,7 @@
 
 (defn about-page
   [request]
-  (ring-resp/response (format "Clojure %s - served from %s"
-                              (clojure-version)
-                              (route/url-for ::about-page))))
+  (ring-resp/response (format "Clojure %s" (clojure-version))))
 
 (defroutes routes
   ;; Defines "/" and "/about" routes with their associated :get handlers.
