@@ -3,19 +3,24 @@
             [io.pedestal.http.body-params :as body-params]
             [io.pedestal.http.route.definition :refer [defroutes]]
             [ring.util.response :as ring-resp]
+            ;; TODO: remove
             [alice.book :as book]
-            [alice.views :as views]))
+            [alice.views :as views]
+            [clojure.string :as string]))
+
+(def book
+  (let [pages (book/paginate (string/split-lines (slurp "resources/book.txt")) 35)]
+    {:title "Alice's Adventures in Wonderland"
+     :pages pages
+     :pages-count (count pages)}))
 
 (defn home-page
   [request]
-  (ring-resp/response
-   (views/book-page book/title (first book/pages) 1)))
+  (ring-resp/response (views/book-page book 1)))
 
 (defn book-page
   [{{page-number :id} :path-params}]
-  (let [page-number (read-string page-number)]
-    (ring-resp/response
-     (views/book-page book/title (nth book/pages (dec page-number)) page-number))))
+  (ring-resp/response (views/book-page book (read-string page-number))))
 
 (defn about-page
   [request]
