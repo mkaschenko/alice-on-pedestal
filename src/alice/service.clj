@@ -9,17 +9,13 @@
 
 (defn home-page
   [request]
-  (ring-resp/response (format "<h1>%s</h1></br></br><div>%s</div>"
-                              book/title
-                              (string/join "</br>" (first book/pages)))))
+  (ring-resp/response (book/html-page book/title (first book/pages))))
+
 (defn book-page
   [{{page-number :id} :path-params}]
-  (ring-resp/response (format
-                       "<h1>%s</h1></br></br><div>%s</div>"
-                       book/title
-                       (string/join "</br>"
-                                    (nth book/pages
-                                         (dec (read-string page-number)))))))
+  (ring-resp/response (book/html-page book/title
+                                      (nth book/pages
+                                           (dec (read-string page-number))))))
 
 (defn about-page
   [request]
