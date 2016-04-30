@@ -22,5 +22,5 @@
 (defn html-page
   "Construct page HTML view"
   [title page]
-  (format "<h1>%s</h1></br></br><div>%s</div>"
-          title (string/join "</br>" page)))
+  (format "<title>%s</title><h1>%s</h1></br></br><div>%s</div>"
+          title title (string/join "</br>" page)))
