@@ -5,17 +5,18 @@
             [io.pedestal.http.route.definition :refer [defroutes]]
             [ring.util.response :as ring-resp]
             [alice.book :as book]
-            [clojure.string :as string]))
+            [alice.views :as views]))
 
 (defn home-page
   [request]
-  (ring-resp/response (book/html-page book/title (first book/pages))))
+  (ring-resp/response
+   (views/book-page book/title (first book/pages) 1)))
 
 (defn book-page
   [{{page-number :id} :path-params}]
-  (ring-resp/response (book/html-page book/title
-                                      (nth book/pages
-                                           (dec (read-string page-number))))))
+  (let [page-number (read-string page-number)]
+    (ring-resp/response
+     (views/book-page book/title (nth book/pages (dec page-number)) page-number))))
 
 (defn about-page
   [request]
@@ -30,7 +31,7 @@
   [[["/" {:get home-page}
      ^:interceptors [(body-params/body-params) bootstrap/html-body]
 
-     ["/page/:id" {:get book-page}
+     ["/page/:id" {:get [:book-page book-page]}
       ^:constraints {:id #"[0-9]+"}]
 
      ["/about" {:get about-page}]]]])

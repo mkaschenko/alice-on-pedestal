@@ -17,10 +17,4 @@
 (def pages
   (paginate
    (string/split-lines (slurp "resources/book.txt"))
-   30))
-
-(defn html-page
-  "Construct page HTML view"
-  [title page]
-  (format "<title>%s</title><h1>%s</h1></br></br><div>%s</div>"
-          title title (string/join "</br>" page)))
+   35))
