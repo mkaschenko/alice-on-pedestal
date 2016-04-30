@@ -12,6 +12,14 @@
   (ring-resp/response (format "<h1>%s</h1></br></br><div>%s</div>"
                               book/title
                               (string/join "</br>" (first book/pages)))))
+(defn book-page
+  [{{page-number :id} :path-params}]
+  (ring-resp/response (format
+                       "<h1>%s</h1></br></br><div>%s</div>"
+                       book/title
+                       (string/join "</br>"
+                                    (nth book/pages
+                                         (dec (read-string page-number)))))))
 
 (defn about-page
   [request]
@@ -25,6 +33,10 @@
   ;; apply to / and its children (/about).
   [[["/" {:get home-page}
      ^:interceptors [(body-params/body-params) bootstrap/html-body]
+
+     ["/page/:id" {:get book-page}
+      ^:constraints {:id #"[0-9]+"}]
+
      ["/about" {:get about-page}]]]])
 
 ;; Consumed by alice.server/create-server

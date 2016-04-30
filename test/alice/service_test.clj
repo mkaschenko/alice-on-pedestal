@@ -10,6 +10,10 @@
 (deftest home-page-test
   (is (= (:status (response-for service :get "/")) 200)))
 
+(deftest book-page-test
+  (is (= (:status (response-for service :get "/page/2")) 200))
+  (is (= (:status (response-for service :get "page/first")) 404)))
+
 (deftest about-page-test
   (is (.contains
        (:body (response-for service :get "/about"))
