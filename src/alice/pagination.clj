@@ -1,4 +1,4 @@
-(ns alice.book)
+(ns alice.pagination)
 
 (defn paginate
   "Split lines into pages"

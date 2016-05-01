@@ -3,15 +3,14 @@
             [io.pedestal.http.body-params :as body-params]
             [io.pedestal.http.route.definition :refer [defroutes]]
             [ring.util.response :as ring-resp]
-            ;; TODO: remove
-            [alice.book :as book]
+            [alice.pagination :refer [paginate]]
             [alice.views :as views]
             [clojure.string :as string]))
 
 (def book
-  (let [pages (book/paginate (string/split-lines (slurp "resources/book.txt")) 35)]
-    {:title "Alice's Adventures in Wonderland"
-     :pages pages
+  (let [pages (paginate (string/split-lines (slurp "resources/book.txt")) 35)]
+    {:title       "Alice's Adventures in Wonderland"
+     :pages       pages
      :pages-count (count pages)}))
 
 (defn home-page
