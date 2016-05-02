@@ -19,7 +19,10 @@
 
 (defn show-page
   [{{page-number :id} :path-params}]
-  (ring-resp/response (views/book-page book (read-string page-number))))
+  (let [page-number (read-string page-number)]
+    (if (> page-number 7)
+      (ring-resp/redirect "/")
+      (ring-resp/response (views/book-page book page-number)))))
 
 (defn about-page
   [request]

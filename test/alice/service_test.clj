@@ -10,8 +10,10 @@
 (deftest home-page-test
   (is (= (:status (response-for service :get "/")) 200)))
 
-(deftest book-page-test
+(deftest show-page-test
   (is (= (:status (response-for service :get "/page/2")) 200))
+  (is (= (:status (response-for service :get "/page/8")) 302))
+  (is (= (get (:headers (response-for service :get "/page/8")) "Location") "/"))
   (is (= (:status (response-for service :get "page/first")) 404)))
 
 (deftest about-page-test
