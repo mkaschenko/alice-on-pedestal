@@ -17,7 +17,7 @@
   [request]
   (ring-resp/response (views/book-page book 1)))
 
-(defn book-page
+(defn show-page
   [{{page-number :id} :path-params}]
   (ring-resp/response (views/book-page book (read-string page-number))))
 
@@ -32,7 +32,7 @@
   [[["/" {:get home-page}
      ^:interceptors [(body-params/body-params) bootstrap/html-body]
 
-     ["/page/:id" {:get [:book-page book-page]}
+     ["/page/:id" {:get [:show-page show-page]}
       ^:constraints {:id #"[0-9]+"}]
 
      ["/about" {:get about-page}]]]])
