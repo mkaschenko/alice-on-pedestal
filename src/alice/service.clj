@@ -2,9 +2,14 @@
   (:require [io.pedestal.http :as bootstrap]
             [io.pedestal.http.body-params :as body-params]
             [io.pedestal.http.route.definition :refer [defroutes]]
+            [io.pedestal.http.ring-middlewares :as middlewares]
+
+            [ring.middleware.session.cookie :as cookie]
             [ring.util.response :as ring-resp]
+
             [alice.pagination :refer [paginate]]
             [alice.views :as views]
+
             [clojure.string :as string]))
 
 (def book
@@ -33,7 +38,9 @@
   ;; The interceptors defined after the verb map (e.g., {:get home-page}
   ;; apply to / and its children (/about).
   [[["/" {:get home-page}
-     ^:interceptors [(body-params/body-params) bootstrap/html-body]
+     ^:interceptors [(body-params/body-params) bootstrap/html-body
+                     middlewares/params middlewares/keyword-params
+                     (middlewares/session {:store (cookie/cookie-store)})]
 
      ["/page/:id" {:get [:show-page show-page]}
       ^:constraints {:id #"[0-9]+"}]
@@ -42,7 +49,7 @@
 
 ;; Consumed by alice.server/create-server
 ;; See bootstrap/default-interceptors for additional options you can configure
-(def service {:env :prod
+(def service {:env               :prod
               ;; You can bring your own non-default interceptors. Make
               ;; sure you include routing and set it up right for
               ;; dev-mode. If you do, many other keys for configuring

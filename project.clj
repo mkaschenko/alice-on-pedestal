@@ -2,7 +2,7 @@
   :description "FIXME: write description"
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
-            :url "http://www.eclipse.org/legal/epl-v10.html"}
+            :url  "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.7.0"]
                  [io.pedestal/pedestal.service "0.4.1"]
 
@@ -21,7 +21,7 @@
                  [org.slf4j/log4j-over-slf4j "1.7.12"]]
   :min-lein-version "2.0.0"
   :resource-paths ["config", "resources"]
-  :profiles {:dev {:aliases {"run-dev" ["trampoline" "run" "-m" "alice.server/run-dev"]}
-                   :dependencies [[io.pedestal/pedestal.service-tools "0.4.1"]]}
+  :profiles {:dev     {:aliases      {"run-dev" ["trampoline" "run" "-m" "alice.server/run-dev"]}
+                       :dependencies [[io.pedestal/pedestal.service-tools "0.4.1"]]}
              :uberjar {:aot [alice.server]}}
   :main ^{:skip-aot true} alice.server)
