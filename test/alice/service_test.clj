@@ -12,9 +12,29 @@
 
 (deftest show-page-test
   (is (= (:status (response-for service :get "/page/2")) 200))
-  (is (= (:status (response-for service :get "/page/8")) 302))
-  (is (= (get (:headers (response-for service :get "/page/8")) "Location") "/"))
-  (is (= (:status (response-for service :get "page/first")) 404)))
+  (is (= (:status (response-for service :get "page/first")) 404))
+
+  ;; unauthenticated
+  (let [response (response-for service :get "/page/8")]
+    (is (= (:status response) 302))
+    (is (= (get (:headers response) "Location") "/sign-in"))))
+
+(deftest sign-in-page-test
+  (is (= (:status (response-for service :get "/sign-in")) 200)))
+
+(deftest authenticate-test
+  (let [response (response-for service :post "/authenticate?secret=maxim")]
+    (is (= (:status response) 302))
+    (is (= (get (:headers response) "Location") "/page/8")))
+
+  (let [response (response-for service :post "/authenticate")]
+    (is (= (:status response) 200))
+    (is (.contains (:body response) "No, no, no!"))))
+
+(deftest sign-out-test
+  (let [response (response-for service :get "/sign-out")]
+    (is (= (:status response) 302))
+    (is (= (get (:headers response) "Location") "/"))))
 
 (deftest about-page-test
   (is (.contains

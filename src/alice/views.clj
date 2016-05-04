@@ -1,6 +1,7 @@
 (ns alice.views
   (:require [clojure.string :as string]
-            [io.pedestal.http.route :as route]))
+            [io.pedestal.http.route :as route]
+            [hiccup.page :as hiccup]))
 
 (defn back-link
   [page-number min-page-number]
@@ -25,3 +26,19 @@
           page-number
           (continue-link page-number pages-count)
           (string/join "</br>" (nth pages (dec page-number)))))
+
+(defn sign-in-page
+  ([] (sign-in-page {:fair true}))
+  ([{fair :fair}]
+   (hiccup/html5
+    [:html
+     [:head
+      [:title "Let's be more closer"]]
+     [:body
+      [:h1 (if fair
+             "Tell me your secret..."
+             "No, no, no! That wasn't fair")]
+      [:form {:action (route/url-for :authenticate) :method "POST"}
+       [:label {:for "secret"} "Secret"]
+       [:input {:type "text", :name "secret"}]
+       [:input {:type "submit", :name "submit", :value "Tell"}]]]])))

@@ -1,5 +1,6 @@
 (ns alice.service
   (:require [io.pedestal.http :as bootstrap]
+            [io.pedestal.http.route :as route]
             [io.pedestal.http.body-params :as body-params]
             [io.pedestal.http.route.definition :refer [defroutes]]
             [io.pedestal.http.ring-middlewares :as middlewares]
@@ -9,6 +10,7 @@
 
             [alice.pagination :refer [paginate]]
             [alice.views :as views]
+            [alice.session :as session]
 
             [clojure.string :as string]))
 
@@ -23,11 +25,27 @@
   (ring-resp/response (views/book-page book 1)))
 
 (defn show-page
-  [{{page-number :id} :path-params}]
-  (let [page-number (read-string page-number)]
-    (if (> page-number 7)
-      (ring-resp/redirect "/")
+  [request]
+  (let [page-number (read-string (get-in request [:path-params :id]))]
+    (if (and (> page-number 7) (not (session/authenticated? request)))
+      (ring-resp/redirect (route/url-for :sign-in-page))
       (ring-resp/response (views/book-page book page-number)))))
+
+(defn sign-in-page
+  [request]
+  (ring-resp/response (views/sign-in-page)))
+
+(defn authenticate
+  [{{secret :secret} :params}]
+  (if-not (string/blank? secret)
+    (session/authenticate
+     (ring-resp/redirect (route/url-for :show-page :params {:id 8}))
+     secret)
+    (ring-resp/response (views/sign-in-page {:fair false}))))
+
+(defn sign-out
+  [request]
+  (session/deauthenticate (ring-resp/redirect (route/url-for :home-page))))
 
 (defn about-page
   [request]
@@ -37,13 +55,17 @@
   ;; Defines "/" and "/about" routes with their associated :get handlers.
   ;; The interceptors defined after the verb map (e.g., {:get home-page}
   ;; apply to / and its children (/about).
-  [[["/" {:get home-page}
+  [[["/" {:get [:home-page home-page]}
      ^:interceptors [(body-params/body-params) bootstrap/html-body
                      middlewares/params middlewares/keyword-params
                      (middlewares/session {:store (cookie/cookie-store)})]
 
      ["/page/:id" {:get [:show-page show-page]}
       ^:constraints {:id #"[0-9]+"}]
+
+     ["/sign-in" {:get [:sign-in-page sign-in-page]}]
+     ["/authenticate" {:post [:authenticate authenticate]}]
+     ["/sign-out" {:get [:sign-out sign-out]}]
 
      ["/about" {:get about-page}]]]])
 
