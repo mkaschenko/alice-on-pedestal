@@ -76,7 +76,7 @@
      ["/authenticate" {:post [:authenticate authenticate]}]
      ["/sign-out" {:get [:sign-out sign-out]}]
 
-     ["/secrets/:id" {:get secret-page}]
+     ["/secrets/:id" {:get [:secret-page secret-page]}]
      ["/about" {:get about-page}]]]])
 
 ;; Consumed by alice.server/create-server

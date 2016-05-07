@@ -1,7 +1,7 @@
 (ns alice.views
   (:require [clojure.string :as string]
             [io.pedestal.http.route :as route]
-            [hiccup.page :as hiccup]))
+            (hiccup core page)))
 
 (defn back-link
   [page-number min-page-number]
@@ -17,6 +17,12 @@
             (route/url-for :book-page-page :params {:id (inc page-number)}))
     ""))
 
+(defn secret-page-link
+  [secret]
+  (let [url (route/url-for :secret-page :params {:id secret})]
+    (hiccup.core/html
+     [:a {:href url} url])))
+
 (defn book-page
   [{:keys [:title :pages :pages-count]} page-number]
   (format "<title>%s</title><h1>%s</h1><div>%s -- %d -- %s</div></br><div>%s</div>"
@@ -30,7 +36,7 @@
 (defn sign-in-page
   ([] (sign-in-page {:fair true}))
   ([{fair :fair}]
-   (hiccup/html5
+   (hiccup.page/html5
     [:html
      [:head
       [:title "Let's be more closer"]]
@@ -42,3 +48,5 @@
        [:label {:for "secret"} "Secret"]
        [:input {:type "text", :name "secret"}]
        [:input {:type "submit", :name "submit", :value "Tell"}]]]])))
+      [:p
+       [:i "Visit your secret page at " (secret-page-link "your-secret")]]]])))
