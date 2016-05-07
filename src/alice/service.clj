@@ -50,6 +50,12 @@
   [request]
   (session/deauthenticate (ring-resp/redirect (route/url-for :home-page))))
 
+(defn secret-page
+  [request]
+  (if (= (session/secret request) (get-in request [:path-params :id]))
+    (ring-resp/response (session/secret request))
+    (ring-resp/status (ring-resp/response "No secrets!") 403)))
+
 (defn about-page
   [request]
   (ring-resp/response (format "Clojure %s" (clojure-version))))
@@ -70,6 +76,7 @@
      ["/authenticate" {:post [:authenticate authenticate]}]
      ["/sign-out" {:get [:sign-out sign-out]}]
 
+     ["/secrets/:id" {:get secret-page}]
      ["/about" {:get about-page}]]]])
 
 ;; Consumed by alice.server/create-server

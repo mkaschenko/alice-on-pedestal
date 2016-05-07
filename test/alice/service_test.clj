@@ -27,6 +27,7 @@
     (is (= (:status response) 302))
     (is (= (get (:headers response) "Location") "/page/8")))
 
+  ;; there is no secret
   (let [response (response-for service :post "/authenticate")]
     (is (= (:status response) 200))
     (is (.contains (:body response) "No, no, no!"))))
@@ -35,6 +36,9 @@
   (let [response (response-for service :get "/sign-out")]
     (is (= (:status response) 302))
     (is (= (get (:headers response) "Location") "/"))))
+
+(deftest secret-page-test
+  (is (= (:status (response-for service :get "/secrets/alice")) 403)))
 
 (deftest about-page-test
   (is (.contains
