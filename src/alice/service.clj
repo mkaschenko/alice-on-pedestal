@@ -26,8 +26,10 @@
 
 (defn book-page-page
   [request]
-  (let [page-number (read-string (get-in request [:path-params :id]))]
-    (if (and (> page-number 7) (not (session/authenticated? request)))
+  (let [page-number           (read-string (get-in request [:path-params :id]))
+        last-free-page-number 7]
+    (if (and (> page-number last-free-page-number)
+             (not (session/authenticated? request)))
       (ring-resp/redirect (route/url-for :sign-in-page))
       (ring-resp/response (views/book-page book page-number)))))
 
