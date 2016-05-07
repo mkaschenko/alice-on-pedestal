@@ -13,8 +13,10 @@
 (defn continue-link
   [page-number max-page-number]
   (if (< page-number max-page-number)
-    (format "<a href=\"%s\">continue</a>"
-            (route/url-for :book-page-page :params {:id (inc page-number)}))
+    (hiccup.core/html
+     [:a
+      {:href (route/url-for :book-page-page :params {:id (inc page-number)})}
+      "continue"])
     ""))
 
 (defn secret-page-link
@@ -25,7 +27,11 @@
 
 (defn book-page
   [{:keys [:title :pages :pages-count]} page-number]
-  (format "<title>%s</title><h1>%s</h1><div>%s -- %d -- %s</div></br><div>%s</div>"
+  (format "<title>%s</title>
+           <h1>%s</h1>
+           <div>%s -- %d -- %s</div>
+           </br>
+           <div>%s</div>"
           title
           title
           (back-link page-number 1)
@@ -39,14 +45,13 @@
    (hiccup.page/html5
     [:html
      [:head
-      [:title "Let's be more closer"]]
+      [:title "What is your secret..."]]
      [:body
       [:h1 (if fair
-             "Tell me your secret..."
-             "No, no, no! That wasn't fair")]
+             "What is your secret..."
+             "No, no, no! That wasn't fair.")]
       [:form {:action (route/url-for :authenticate) :method "POST"}
-       [:label {:for "secret"} "Secret"]
-       [:input {:type "text", :name "secret"}]
-       [:input {:type "submit", :name "submit", :value "Tell"}]]]])))
+       [:input {:type "text", :name "secret", :placeholder "Your secret"}]
+       [:input {:type "submit", :name "submit", :value "Tell"}]]
       [:p
        [:i "Visit your secret page at " (secret-page-link "your-secret")]]]])))
