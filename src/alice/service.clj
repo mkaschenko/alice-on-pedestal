@@ -24,7 +24,7 @@
   [request]
   (ring-resp/response (views/book-page book 1)))
 
-(defn show-page
+(defn book-page-page
   [request]
   (let [page-number (read-string (get-in request [:path-params :id]))]
     (if (and (> page-number 7) (not (session/authenticated? request)))
@@ -37,11 +37,12 @@
 
 (defn authenticate
   [{{secret :secret} :params}]
-  (if-not (string/blank? secret)
+  (if (string/blank? secret)
+    (ring-resp/response (views/sign-in-page {:fair false}))
     (session/authenticate
-     (ring-resp/redirect (route/url-for :show-page :params {:id 8}))
-     secret)
-    (ring-resp/response (views/sign-in-page {:fair false}))))
+     ;; TODO: use "next" parameter instead of hard-coded
+     (ring-resp/redirect (route/url-for :book-page-page :params {:id 8}))
+     secret)))
 
 (defn sign-out
   [request]
@@ -60,7 +61,7 @@
                      middlewares/params middlewares/keyword-params
                      (middlewares/session {:store (cookie/cookie-store)})]
 
-     ["/page/:id" {:get [:show-page show-page]}
+     ["/page/:id" {:get [:book-page-page book-page-page]}
       ^:constraints {:id #"[0-9]+"}]
 
      ["/sign-in" {:get [:sign-in-page sign-in-page]}]

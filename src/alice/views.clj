@@ -7,14 +7,14 @@
   [page-number min-page-number]
   (if (< min-page-number page-number)
     (format "<a href=\"%s\">back</a>"
-            (route/url-for :show-page :params {:id (dec page-number)}))
+            (route/url-for :book-page-page :params {:id (dec page-number)}))
     ""))
 
 (defn continue-link
   [page-number max-page-number]
   (if (< page-number max-page-number)
     (format "<a href=\"%s\">continue</a>"
-            (route/url-for :show-page :params {:id (inc page-number)}))
+            (route/url-for :book-page-page :params {:id (inc page-number)}))
     ""))
 
 (defn book-page
