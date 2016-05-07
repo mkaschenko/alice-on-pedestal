@@ -8,6 +8,10 @@
   [response]
   (assoc-in response [:session :secret] nil))
 
+(defn secret
+  [request]
+  (get-in request [:session :secret]))
+
 (defn authenticated?
   [request]
-  (boolean (get-in request [:session :secret])))
+  (boolean (secret request)))

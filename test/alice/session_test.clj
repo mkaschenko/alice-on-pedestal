@@ -12,6 +12,9 @@
        (session/deauthenticate {:status 200 :session {:secret "sacred tales"}})
        {:status 200 :session {:secret nil}})))
 
+(deftest secret-test
+  (is (= (session/secret {:session {:secret "No!"}})) "No!"))
+
 (deftest authenticated?-test
   (is (session/authenticated? {:session {:secret "sacred tales"}}))
   (is (not (session/authenticated? {:session {:secret nil}}))))
