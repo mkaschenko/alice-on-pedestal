@@ -3,7 +3,7 @@
 ## Getting Started
 
 Start REPL `lein repl` and eval `(run-dev) (dev/watch)`.    
-Go to http://localhost:8080.
+Go to [http://localhost:8080](http://localhost:8080).
 
 ## Guide
 
